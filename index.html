@@ -7,32 +7,32 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-   
+    
     <style>
         /* 터치 안 넘어가는 문제 완벽 해결: 무조건 숨김 처리 */
         .hidden { display: none !important; }
 
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-       
+        
         body, html { height: 100%; margin: 0; overflow: hidden; background-color: #f7f9fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
         .app-container { height: 100vh; display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.1); position: relative; }
-       
+        
         .tabs-wrapper { flex: 1; overflow-y: auto; padding-bottom: 120px; }
-       
+        
         .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center; padding: 5px 15px 15px 15px; z-index: 50; }
         .nav-btn { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: #9CA3AF; font-weight: 600; width: 20%; position: relative; background: none; border: none; cursor: pointer; transition: color 0.2s; }
         .nav-btn.active { color: #2563EB; }
         .nav-btn.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
         .material-symbols-outlined { font-size: 26px; margin-bottom: 2px; }
-       
+        
         .nav-qr-btn { display: flex; flex-direction: column; align-items: center; width: 20%; position: relative; top: -15px; cursor: pointer; z-index: 55; }
         .qr-circle { width: 52px; height: 52px; background-color: #2563EB; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4); border: 4px solid white; color: white; transition: transform 0.1s; }
         .qr-circle .material-symbols-outlined { font-size: 26px; margin: 0; }
         .qr-circle:active { transform: scale(0.95); }
-       
+        
         .badge { position: absolute; top: -2px; right: 8px; background: #EF4444; color: white; font-size: 10px; font-weight: bold; padding: 2px 5px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-       
+        
         /* 카메라 스캔 애니메이션 */
         @keyframes scanline { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
         .animate-scan { animation: scanline 2s linear infinite; }
@@ -55,14 +55,14 @@
         .barcode-pattern { background-image: repeating-linear-gradient(to right, #000 0, #000 2px, transparent 2px, transparent 5px, #000 5px, #000 6px, transparent 6px, transparent 10px); }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
-       
+        
         /* 반짝거리는 효과 (Twinkle) 애니메이션 추가 */
         @keyframes twinkle {
             0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.6); }
             50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.9); }
             100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.6); }
         }
-       
+        
         .gilded-button {
             animation: twinkle 1.5s infinite ease-in-out;
             border-color: #FFD700 !important;
@@ -73,7 +73,11 @@
 <body>
 
 <div class="app-container relative">
-   
+
+    <div id="splash-screen" class="absolute inset-0 z-[200] bg-white flex justify-center items-center transition-opacity duration-500">
+        <img src="intro.jpg" alt="Intro Image" class="w-full h-full object-cover">
+    </div>
+    
     <div id="view-onboarding" class="absolute inset-0 flex flex-col h-full bg-white z-[100]">
         <div id="view-landing" class="fade-in flex flex-col h-full p-6 justify-center items-center text-center relative z-20">
             <div class="mb-8 p-6 bg-blue-50 text-blue-600 rounded-full shadow-inner flex items-center justify-center w-32 h-32">
@@ -93,7 +97,7 @@
 
         <div id="view-intro" class="fade-in hidden flex-col h-full bg-gray-50 overflow-y-auto pb-10">
             <div class="relative w-full h-[450px] sm:h-[550px] flex-shrink-0 map-bg-fallback overflow-hidden border-b-4 border-blue-600 shadow-inner">
-                <div id="map-wrapper" class="w-full h-full transition-transform ease-in-out" style="transition-duration: 2s;">
+                <div id="map-wrapper" class="w-full h-full transition-transform ease-in-out" style="transition-duration: 5s;">
                     <img id="gwangju-map" src="./map.png" alt="지도" onerror="this.style.display='none';">
                 </div>
                 <div id="map-focus" class="absolute top-1/2 left-1/2 w-20 h-20 bg-blue-500/30 border-blue-600 rounded-full map-focus-ring hidden"></div>
@@ -120,7 +124,7 @@
                 <ul class="text-sm text-gray-600 space-y-4 bg-gray-50 p-5 rounded-xl border border-gray-200">
                     <li class="flex items-center font-bold text-blue-700"><span class="material-symbols-outlined text-blue-500 mr-2 text-base font-black">check_circle</span>우리 동네 가맹점 이용 시 자동 연대 할인</li>
                     <li class="flex items-center"><span class="material-symbols-outlined text-blue-500 mr-2 text-base font-black">check_circle</span>결제 시 자동으로 소외계층 돕기 기금 적립</li>
-                    <li class="flex items-center font-bold text-red-500"><span class="material-symbols-outlined mr-2 text-base font-black">check_circle</span>매 분기 조합비 00,000원 혜택 내 자동 상계</li>
+                    <li class="flex items-center font-bold text-red-500"><span class="material-symbols-outlined mr-2 text-base font-black">check_circle</span>1분기(3개월) 조합비 5,000원 혜택 내 자동 상계</li>
                 </ul>
             </div>
             <div class="flex space-x-3 mt-auto relative z-30">
@@ -154,12 +158,12 @@
         </div>
 
         <div class="tabs-wrapper bg-gray-50" id="tabs-container">
-           
+            
             <div id="tab-home" class="fade-in p-5 tab-content">
                 <div class="bg-white rounded-xl p-3 mb-4 flex justify-between items-center shadow-sm border border-gray-100">
                     <p class="text-xs text-gray-600 font-bold flex items-center"><span class="material-symbols-outlined text-blue-500 mr-2 text-base font-black">campaign</span> [공지] 우리 동네 상생 가맹점 100호 돌파!</p>
                 </div>
-               
+                
                 <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 mb-5 relative">
                     <h2 class="text-lg font-bold text-gray-800 mb-1"><span id="user-display-address" class="text-blue-600">지역</span> 준조합원님 ></h2>
                     <p class="text-xs text-gray-500 mb-4 font-medium">현재까지 받은 누적 상생 혜택</p>
@@ -273,9 +277,9 @@
                 <div id="map-view-around" class="hidden flex-1 relative map-bg-fallback overflow-hidden">
                     <div class="absolute top-[45%] left-1/2 w-5 h-5 bg-red-600 border-4 border-white rounded-full transform -translate-x-1/2 -translate-y-1/2 shadow-lg z-20 map-focus-ring"></div>
                     <div class="absolute top-[45%] left-1/2 transform -translate-x-1/2 mt-3 bg-white text-red-600 px-2 py-0.5 rounded shadow text-[10px] font-bold z-20">현재 내 위치</div>
-                   
+                    
                     <div id="map-markers-container" class="absolute inset-0 z-10"></div>
-                   
+                    
                     <div class="absolute bottom-28 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-xl flex items-center cursor-pointer active:scale-95 z-20">
                         <span class="material-symbols-outlined text-base mr-1">refresh</span> 현 지도 재검색
                     </div>
@@ -487,7 +491,7 @@
             </div>
 
         </div>
-       
+        
         <div class="bottom-nav" id="nav-customer">
             <button class="nav-btn active" id="nav-home-cust" onclick="switchNavCustomer('home', this)"><span class="material-symbols-outlined">account_balance_wallet</span><span class="text-[10px] mt-1 font-bold">내 지갑</span></button>
             <button class="nav-btn" id="nav-msg-cust" onclick="switchNavCustomer('msg', this)"><span class="relative"><span class="material-symbols-outlined">redeem</span><div class="badge flex justify-center items-center" id="msg-badge">3</div></span><span class="text-[10px] mt-1 font-bold">소식함</span></button>
@@ -528,14 +532,14 @@
             <button onclick="closeEventModal()" class="absolute top-4 right-5 text-gray-400 active:scale-90"><span class="material-symbols-outlined text-3xl">close</span></button>
             <p class="text-center text-blue-600 font-bold text-xs mb-1">우리 단골 동네</p><h3 class="text-center font-black text-xl mb-5 text-gray-800">조합원 혜택 안내</h3>
             <div class="space-y-4 mb-8 text-sm">
-                <div class="bg-gray-50 p-4 rounded-xl flex space-x-3 items-start border border-gray-100"><span class="material-symbols-outlined text-gray-500">account_balance_wallet</span><div><p class="font-bold">기본 혜택</p><p class="text-xs text-gray-600">가맹점 이용 시 결제액 <span class="text-blue-600 font-bold">00%</span> 자동 연대 할인</p></div></div>
-                <div class="bg-blue-50 p-4 rounded-xl flex space-x-3 items-start border border-blue-100 text-blue-800"><span class="material-symbols-outlined">redeem</span><div><p class="font-bold">혜택 유지 조건</p><p class="text-xs">분기(00개월) <span class="text-red-500 font-bold">00,000원</span> 조합비 자동 상계 처리</p></div></div>
-                <div class="bg-pink-50 p-4 rounded-xl flex space-x-3 items-start border border-pink-100 text-pink-800"><span class="material-symbols-outlined">volunteer_activism</span><div><p class="font-bold">상생 기금 적립</p><p class="text-xs">최종 결제액의 <span class="text-pink-600 font-bold">00%</span>는 소외계층 기금으로 적립</p></div></div>
+                <div class="bg-gray-50 p-4 rounded-xl flex space-x-3 items-start border border-gray-100"><span class="material-symbols-outlined text-gray-500">account_balance_wallet</span><div><p class="font-bold">기본 혜택</p><p class="text-xs text-gray-600">가맹점 이용 시 결제액 <span class="text-blue-600 font-bold">5%</span> 자동 연대 할인</p></div></div>
+                <div class="bg-blue-50 p-4 rounded-xl flex space-x-3 items-start border border-blue-100 text-blue-800"><span class="material-symbols-outlined">redeem</span><div><p class="font-bold">혜택 유지 조건</p><p class="text-xs">1분기(3개월) <span class="text-red-500 font-bold">5,000원</span> 조합비 자동 상계 처리</p></div></div>
+                <div class="bg-pink-50 p-4 rounded-xl flex space-x-3 items-start border border-pink-100 text-pink-800"><span class="material-symbols-outlined">volunteer_activism</span><div><p class="font-bold">상생 기금 적립</p><p class="text-xs">최종 결제액의 <span class="text-pink-600 font-bold">1%</span>는 소외계층 기금으로 적립</p></div></div>
             </div>
             <button onclick="closeEventModal()" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl shadow-md active:scale-95 transition">확인했습니다</button>
         </div>
     </div>
-   
+    
     <div id="modal-barcode" class="fixed inset-0 bg-black/70 z-[100] hidden flex-col justify-center items-center p-5 fade-in">
         <div class="bg-white rounded-3xl w-full max-w-sm p-6 relative shadow-2xl">
             <button onclick="closeBarcodeModal()" class="absolute top-4 right-5 text-gray-400 active:scale-90"><span class="material-symbols-outlined text-3xl">close</span></button>
@@ -580,22 +584,26 @@
         landing.style.display = 'none';
         landing.classList.add('hidden');
         landing.classList.remove('flex');
-       
+        
         intro.style.display = 'flex';
         intro.classList.remove('hidden');
         intro.classList.add('flex');
     };
-   
+    
     window.startQRSignup = function() { alert("📷 매장 QR 스캔 기능은 연동 준비 중입니다."); };
 
+    // 지도 포커스 수학적 계산 적용 (정중앙 이동)
     function focusMapByDongName(dong) {
         const mapWrapper = document.getElementById('map-wrapper'); const mapFocus = document.getElementById('map-focus'); const mapPin = document.getElementById('map-pin');
         if(dong && dongCoordinates[dong]) {
             const coord = dongCoordinates[dong];
             mapWrapper.style.transformOrigin = `${coord.x}% ${coord.y}%`;
-            mapWrapper.style.transform = `scale(3)`;
-            mapFocus.style.left = `${coord.x}%`; mapFocus.style.top = `${coord.y}%`; mapFocus.classList.remove('hidden');
-            mapPin.style.left = `${coord.x}%`; mapPin.style.top = `${coord.y}%`; mapPin.classList.remove('hidden');
+            // 목표 좌표가 정중앙에 오도록 translate 적용 (100% 기준으로 50% 위치로 이동)
+            mapWrapper.style.transform = `translate(${50 - coord.x}%, ${50 - coord.y}%) scale(3)`;
+            
+            // 핀과 포커스링은 항상 컨테이너의 50%(정중앙)에 고정
+            mapFocus.style.left = `50%`; mapFocus.style.top = `50%`; mapFocus.classList.remove('hidden');
+            mapPin.style.left = `50%`; mapPin.style.top = `50%`; mapPin.classList.remove('hidden');
         }
     }
 
@@ -621,10 +629,11 @@
         const btn = document.getElementById('btn-check-eligibility');
         btn.innerText = "상권 매칭 중..."; btn.disabled = true;
 
+        // 줌인 5초 + 정지 상태 1초 = 총 6초 뒤에 다음 화면으로 이동
         setTimeout(() => {
             btn.innerText = "자격 확인하기"; btn.disabled = false;
             checkEligibilityAuto(addrInput, matchedDong);
-        }, 1500);
+        }, 6000);
     }
 
     function checkEligibilityAuto(addrInput, matchedDong) {
@@ -633,47 +642,47 @@
         if(matchedDong === "광천동") streetName = "광천동 골목형상점가"; else if(matchedDong === "금호동") streetName = "금호지구 골목형상점가"; else if(matchedDong === "치평동") streetName = "상무지구 골목형상점가"; else if(matchedDong === "풍암동") streetName = "풍암지구 골목형상점가"; else if(matchedDong === "화정동") streetName = "화정동 골목형상점가"; else if(matchedDong === "농성동") streetName = "농성동 골목형상점가";
 
         document.getElementById('eligibility-msg').innerHTML = `입력하신 주소지 기반<br><b class="text-blue-900">[${streetName}]</b><br>가입 자격이 확인되었습니다.`;
-       
+        
         var intro = document.getElementById('view-intro');
         var signup2 = document.getElementById('view-signup-2');
         intro.style.display = 'none';
         intro.classList.add('hidden');
         intro.classList.remove('flex');
-       
+        
         signup2.style.display = 'flex';
         signup2.classList.remove('hidden');
         signup2.classList.add('flex');
     }
-   
+    
     function cancelSignup() {
         var intro = document.getElementById('view-intro');
         var signup2 = document.getElementById('view-signup-2');
         signup2.style.display = 'none';
         signup2.classList.add('hidden');
         signup2.classList.remove('flex');
-       
+        
         intro.style.display = 'flex';
         intro.classList.remove('hidden');
         intro.classList.add('flex');
     }
-   
+    
     function completeSignup() {
         var onboarding = document.getElementById('view-onboarding');
         var appMain = document.getElementById('view-app-main');
         onboarding.style.display = 'none';
         onboarding.classList.add('hidden');
         onboarding.classList.remove('flex');
-       
+        
         appMain.style.display = 'flex';
         appMain.classList.remove('hidden');
         appMain.classList.add('flex');
-       
+        
         document.getElementById('user-display-address').innerText = user.matchedDong;
         changeRole('customer'); openEventModal();
     }
 
     function toggleRoleDropdown() { document.getElementById('role-dropdown').classList.toggle('hidden'); }
-   
+    
     function changeRole(role) {
         currentRole = role; document.getElementById('role-dropdown').classList.add('hidden');
         const navCust = document.getElementById('nav-customer'); const navBoss = document.getElementById('nav-boss'); const title = document.getElementById('header-title');
@@ -690,7 +699,7 @@
             document.getElementById('nav-home-boss').classList.add('active'); previousTab = 'boss-home';
         }
     }
-   
+    
     function goBackToHome() {
         if (currentRole === 'customer') {
             switchNavCustomer('home', document.getElementById('nav-home-cust'));
@@ -707,7 +716,7 @@
         if(tabId === 'msg') { user.unreadMsg = 0; updateBadge(); }
         if(tabId === 'map') switchInnerMapTab('search');
     }
-   
+    
     function switchNavBoss(tabId, btnElement) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
         document.getElementById('tab-' + tabId).classList.remove('hidden'); previousTab = tabId;
@@ -721,11 +730,11 @@
         document.getElementById('map-view-search').classList.add('hidden');
         document.getElementById('map-view-around').classList.add('hidden');
         document.getElementById('map-view-favorite').classList.add('hidden');
-       
+        
         document.getElementById('map-tab-1').className = "w-1/3 pb-2 cursor-pointer text-gray-400 text-xs font-bold";
         document.getElementById('map-tab-2').className = "w-1/3 pb-2 cursor-pointer text-gray-400 text-xs font-bold";
         document.getElementById('map-tab-3').className = "w-1/3 pb-2 cursor-pointer text-gray-400 text-xs font-bold";
-       
+        
         if(type === 'search') {
             document.getElementById('map-view-search').classList.remove('hidden');
             document.getElementById('map-tab-1').className = "w-1/3 pb-2 cursor-pointer border-b-2 border-blue-600 text-blue-600 text-xs font-bold";
@@ -749,7 +758,7 @@
             marker.style.left = `${loc.x}%`;
             marker.style.top = `${loc.y}%`;
             marker.onclick = () => showStoreInfo(index);
-           
+            
             const isMulti = loc.stores.length > 1;
             const circleClass = isMulti ? 'w-8 h-8 text-sm' : 'w-6 h-6 text-[10px]';
 
@@ -767,13 +776,13 @@
         const loc = mapLocations[index];
         const sheet = document.getElementById('store-info-sheet');
         const content = document.getElementById('store-info-content');
-       
+        
         let html = '';
         loc.stores.forEach((store, i) => {
             let heartIcon = store.isFav ?
                 `<span class="material-symbols-outlined text-[#E55B2D]" style="font-variation-settings: 'FILL' 1;">favorite</span>` :
                 `<span class="material-symbols-outlined text-gray-300">favorite</span>`;
-           
+            
             html += `
                 <div class="${i !== 0 ? 'mt-5 pt-5 border-t border-gray-100' : ''}">
                     <div class="flex justify-between items-start mb-1">
@@ -795,7 +804,7 @@
                 </div>
             `;
         });
-       
+        
         content.innerHTML = html;
         sheet.style.transform = 'translateY(0)';
     }
@@ -815,11 +824,11 @@
     function startCameraScan() {
         const amount = parseInt(document.getElementById('amount').value);
         if (!amount || amount <= 0) return alert("결제 금액을 정확히 입력해 주세요.");
-       
+        
         document.getElementById('pay-step-1').classList.add('hidden');
         document.getElementById('pay-step-2').classList.remove('hidden');
         document.getElementById('pay-step-2').classList.add('flex');
-       
+        
         setTimeout(() => {
             processPayment(amount);
         }, 1500);
@@ -829,16 +838,16 @@
         if (!isStoreOpen) return alert("매장 영업 종료 상태입니다.");
         const discountAmt = Math.floor(amount * 0.05); const finalAmt = amount - discountAmt; const fundAmt = Math.floor(finalAmt * 0.01);
         user.spent += finalAmt; user.discount += discountAmt; user.donated += fundAmt;
-       
+        
         document.getElementById('dash-spent').innerText = user.spent.toLocaleString() + "원";
         document.getElementById('dash-discount').innerText = user.discount.toLocaleString() + "원";
         document.getElementById('dash-donated').innerText = user.donated.toLocaleString() + "원";
-       
+        
         document.getElementById('r-amount').innerText = amount.toLocaleString() + "원";
         document.getElementById('r-discount').innerText = `-${discountAmt.toLocaleString()}원`;
         document.getElementById('r-fund').innerText = `+${fundAmt.toLocaleString()}원`;
         document.getElementById('r-total').innerText = finalAmt.toLocaleString() + "원";
-       
+        
         document.getElementById('pay-step-2').classList.add('hidden');
         document.getElementById('pay-step-2').classList.remove('flex');
         document.getElementById('receipt').classList.remove('hidden');
@@ -849,11 +858,11 @@
     function closeNotificationTab() { document.getElementById('tab-notifications').classList.add('hidden'); document.getElementById('tab-' + previousTab).classList.remove('hidden'); }
     function togglePrivacyMode() { isPrivacyMode = document.getElementById('privacy-mode-toggle').checked; const storeToggle = document.getElementById('store-status-toggle'); if(isPrivacyMode) { storeToggle.checked = false; storeToggle.disabled = true; } else { storeToggle.disabled = false; } toggleStoreStatus(); }
     function toggleStoreStatus() { isStoreOpen = document.getElementById('store-status-toggle').checked; const title = document.getElementById('boss-status-title'); const bg = document.getElementById('boss-status-bg'); if(isStoreOpen) { title.innerText = "매장 영업 중"; bg.className = "bg-blue-50 p-5 rounded-2xl border border-blue-100 mb-2 flex justify-between items-center transition-colors"; } else { title.innerText = "영업 종료"; bg.className = "bg-red-50 p-5 rounded-2xl border border-red-100 mb-2 flex justify-between items-center transition-colors"; } }
-   
+    
     function startAIAnalysis() {
         const btn = document.getElementById('btn-ai-analyze'); const text = document.getElementById('ai-loading-text'); const send = document.getElementById('btn-send-msg');
         if(!document.getElementById('promo-text').value) return alert("메시지를 작성해주세요.");
-       
+        
         if(document.getElementById('ai-badge-temp')) document.getElementById('ai-badge-temp').remove();
 
         btn.classList.add('hidden'); text.classList.remove('hidden');
@@ -870,12 +879,12 @@
             send.dataset.aiReady = "true";
         }, 1500);
     }
-   
+    
     function sendPushMessage() {
         alert("🚀 발송 완료!");
-       
+        
         const msgText = document.getElementById('promo-text').value;
-       
+        
         // 사장님 모드 발송 이력 동기화
         const list = document.getElementById('boss-sent-list');
         const newItem = document.createElement('div');
@@ -905,7 +914,7 @@
         // 뱃지 숫자 1 증가 처리
         user.unreadMsg += 1;
         updateBadge();
-       
+        
         const totalCountSpan = document.getElementById('msg-total-count');
         const currentTotal = parseInt(totalCountSpan.innerText.replace(/[^0-9]/g, '')) || 8;
         totalCountSpan.innerText = `총 ${currentTotal + 1}건`;
@@ -914,20 +923,35 @@
 
         // 폼 초기화
         document.getElementById('promo-text').value = '';
-       
+        
         const sendBtn = document.getElementById('btn-send-msg');
         sendBtn.disabled = true;
         sendBtn.className = "w-full bg-gray-300 text-white font-bold py-3 rounded-xl text-sm transition flex justify-center items-center cursor-not-allowed";
         sendBtn.innerHTML = "타겟 추출 후 발송 가능";
-       
+        
         document.getElementById('btn-ai-analyze').classList.remove('hidden');
-       
+        
         const badge = document.getElementById('ai-badge-temp');
         if(badge) badge.remove();
     }
 
     function updateBadge() { const badge = document.getElementById('msg-badge'); if(user.unreadMsg > 0) { badge.innerText = user.unreadMsg; badge.style.display = 'flex'; } else { badge.style.display = 'none'; } }
-    window.onload = function() { updateBadge(); renderMapMarkers(); };
+    
+    // 처음에 2초 보여주고 자연스럽게 넘어가도록 하는 코드
+    window.onload = function() { 
+        updateBadge(); 
+        renderMapMarkers(); 
+
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            if(splash) {
+                splash.style.opacity = '0'; // 부드럽게 페이드아웃 효과
+                setTimeout(() => {
+                    splash.classList.add('hidden'); // 완전히 숨김 처리
+                }, 500);
+            }
+        }, 2000); // 2000ms = 2초
+    };
 </script>
 </body>
 </html>
